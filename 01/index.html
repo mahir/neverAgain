@@ -25,7 +25,7 @@
 }
 
 .axis .minor line {
-  stroke: #777;
+  stroke: #999;
   stroke-dasharray: 2,2;
 }
 
@@ -102,8 +102,16 @@
 				var y = d3.scale.ordinal().rangeRoundBands([0, height-margin.bottom], 0.2)
 				var r = d3.scale.sqrt().range([0.5, 15]);
 
-				var xAxis = d3.svg.axis().scale(x).orient("bottom")
-			    var yAxis = d3.svg.axis().scale(y).orient("right").tickSize(width);
+				var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom")
+                .ticks(30)
+                .tickSize(-height);
+			    
+                var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("right")
+                .tickSize(width);
 
 
 
@@ -111,10 +119,16 @@
 				y.domain(countrylist);
 
 
-    svg.append("g")
+    var gx = svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + (height-margin.bottom) + ")")
       .call(xAxis)
+
+      gx.selectAll("g").filter(function(d) { return d; })
+    .classed("minor", true);
+
+
+
 
     var gy = svg.append("g")
     .attr("class", "y axis")
