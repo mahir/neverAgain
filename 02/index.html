@@ -86,6 +86,7 @@ rect {
 			var data = [];
 			var countrylist = [];
 			var parseDate = d3.time.format("%m/%d/%Y").parse;
+            var parseMonth = d3.time.format("%m/%Y").parse;
             var parseYear = d3.time.format("%Y").parse;
 			var formatDate = d3.time.format("%d-%m-%Y");
 
@@ -106,12 +107,13 @@ rect {
 					data.forEach(function(d){
 						// console.log(parseDate(d.a_date_en))
 						d.date = parseDate(d.a_date_en)
-                        console.log(parseYear(d.at_start_tr))
+                        
                         d.date_1 = parseYear(d.at_start_tr)
                         d.date_2 = parseYear(d.at_end_tr)
 
 						if (parseDate(d.a_date_en) === null) {
-							console.log(d.a_date_en)
+							// console.log(d.a_date_en)
+                            d.date = parseMonth(d.a_date_en)
 						}
 						countrylist.push(d.from_tr)
 					});
