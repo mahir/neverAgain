@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+		<title>Chronological Diagram of Official Apologies</title>
+		<link href='http://fonts.googleapis.com/css?family=Duru+Sans&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Vollkorn:400italic,700italic,400,700' rel='stylesheet' type='text/css'>
+		<style type="text/css">
+			body, svg { 
+                /*font-family: 'Duru Sans', sans-serif; */
+                font-family: 'Vollkorn', serif;
+            }
+
+            body{
+    margin:0;
+    padding: 0; 
+    background-image: -webkit-linear-gradient(left , rgb(30,30,30) 0%, rgb(45,45,45) 50%, rgb(30,30,30) 100%);
+}
+    #header {
+        text-align: center;
+        color: #fff;
+        font-size: .8em;
+        border-bottom: 1px solid #333;
+        margin-bottom: 10px;
+        padding: 10px;
+        color: #ccc;
+        /*padding-bottom:10px; */
+    }
+
+    .title {
+        font-size: 1.8em;
+        /*font-weight: normal;*/
+    }
+
+
+
+			svg { font-size: 12px;}
+			.tooltip {
+				max-width: 200px;
+				font-size: 13px;
+				padding: 5px;
+				background: rgba(0,0,0,.9);
+				/*border: 1px dashed #ccc;*/
+                color: #fff;
+			}
+
+			.axis path {
+  display: none;
+}
+
+.axis text {
+    color: #fff;
+    fill: #fff;
+}
+.axis line {
+  shape-rendering: crispEdges;
+  stroke: #fff;
+}
+
+.axis .minor line {
+  stroke: #333;
+  /*stroke-dasharray: 2,2;*/
+}
+
+rect {
+    stroke-width: 3px;
+    stroke-linecap: "round";
+}
+
+		</style>
+		<script src="//use.edgefonts.net/rosario.js"></script>
+		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+	</head>
+	<body>
+    <div id="header">
+        <span class="title">Özürler</span>
+        <p>Günümüze kadar dilenmiş olan resmî özürlerin zaman çizelgesi. Elazar Barkan ve Graham G. Dodds’un danışmanlığında Mahir M. Yavuz tarafindan tasarlanmistir.</p>
+    </div>
+		<script type="text/javascript">
+
+			var margin = {top: 0, right: 120, bottom: 20, left: 0},
+		    width = 960 - margin.left - margin.right,
+		    height = 500 - margin.top - margin.bottom;
+
+			var data = [];
+			var countrylist = [];
+			var parseDate = d3.time.format("%m/%d/%Y").parse;
+            var parseYear = d3.time.format("%Y").parse;
+			var formatDate = d3.time.format("%d-%m-%Y");
+
+
+			var svg, bg;
+
+			$(document).ready(function() {
+                
+				svg = d3.select("body").append("svg:svg")
+					.attr("class", "chart");
+
+				setVisSize();
+
+				d3.csv("../apologies.csv", function(raw) {
+					// console.log(data)
+					data = raw;
+
+					data.forEach(function(d){
+						// console.log(parseDate(d.a_date_en))
+						d.date = parseDate(d.a_date_en)
+                        console.log(parseYear(d.at_start_tr))
+                        d.date_1 = parseYear(d.at_start_tr)
+                        d.date_2 = parseYear(d.at_end_tr)
+
+						if (parseDate(d.a_date_en) === null) {
+							console.log(d.a_date_en)
+						}
+						countrylist.push(d.from_tr)
+					});
+					draw();
+				});
+
+				
+			});
+
+			function setVisSize() {
+
+				width = $(window).width();
+				height = $(window).height()-$('#header').height()-50;
+				$(".chart").attr("width", width)
+							.attr("height", height)
+							.append("g")
+						    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");		
+			}
+
+			$(window).resize(function() {
+				// setVisSize();
+				// draw();
+			});
+
+			function draw() {
+				var color = d3.scale.ordinal()
+    .range(["gray", "pink", "orange", "red", "#a05d56", "#d0743c", "#ff8c00"])
+    .domain([0,1,2,3]);
+
+				// x,y, radius scale
+				var x = d3.time.scale().range([0, width-margin.right]);
+				var y = d3.scale.ordinal().rangeRoundBands([0, height-margin.bottom], 0.2)
+				var r = d3.scale.sqrt().range([0.5, 15]);
+                 
+
+				var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom")
+                .ticks(30)
+                .tickSize(-height);
+			    
+                var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("right")
+                .tickSize(-width);
+
+			    x.domain([parseDate("1/1/1900"),parseDate("1/1/2015")]);
+				y.domain(countrylist);
+
+              
+
+
+    var gx = svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + (height-margin.bottom) + ")")
+      .call(xAxis)
+
+      gx.selectAll("g").filter(function(d) { return d; })
+    .classed("minor", true);
+
+
+
+
+
+    var gy = svg.append("g")
+    .attr("class", "y axis")
+    .attr("transform", "translate(" + (width-margin.right) + ",0)")
+    .call(yAxis);
+
+gy.selectAll("g").filter(function(d) { return d; })
+    .classed("minor", true);
+
+gy.selectAll("text")
+    .attr("x", 4)
+    .attr("dy", -4);
+
+
+      var atrocity = svg.selectAll(".atrocity")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "atrocity")
+      .attr("x", function(d) { return x(d.date_1); })
+      .attr("y", function(d) { return y(d.from_tr) - y.rangeBand()/2; })
+      .attr("width", function(d) { return x(d.date_2) - x(d.date_1); })
+      .attr("height", y.rangeBand()/2)
+      .style("fill", "#000")
+      .style("opacity", ".5")
+      .call(d3.helper.tooltip()
+        .attr("class", function(d, i) { d["atrocity_tr"] })
+        .attr("d", "b")
+        .text(function(d, i){
+            return d["atrocity_tr"];
+            // return "Tarih: <b>"+formatDate(d["date"]) + "</b><br>" 
+                  // + "Özür Dileyen : <b>"+d["from_tr"] + "</b><br><br>" 
+                  // + "<b>"+ d["full_text_tr"] + "</b><br>";
+        }));
+
+          
+
+      var apology = svg.selectAll(".apology")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "apology")
+      .attr("x", function(d) { 
+        return x(d.date); })
+      .attr("y", function(d) { return y(d.from_tr) - y.rangeBand()/2; })
+      .attr("width", 4)
+      .attr("height", y.rangeBand())
+      .style("fill", function(d) { return color(d["ap_rate"]) })
+		.call(d3.helper.tooltip()
+        .attr("class", function(d, i) { d["date"] })
+        .attr("d", "b")
+        .text(function(d, i){
+            return d["full_text_tr"];
+            // return "Tarih: <b>"+formatDate(d["date"]) + "</b><br>" 
+                  // + "Özür Dileyen : <b>"+d["from_tr"] + "</b><br><br>" 
+                  // + "<b>"+ d["full_text_tr"] + "</b><br>";
+        }));      
+
+
+			}
+		// Tooltip Helper from 
+// https://gist.github.com/milroc/2975255
+d3.helper = {};
+ 
+d3.helper.tooltip = function(){
+    var tooltipDiv;
+    var bodyNode = d3.select('body').node();    
+    var attrs = [];
+    var text = "";
+    var styles = [];
+ 
+    function tooltip(selection) {
+ 
+        selection.on("mouseover", function(d, i){
+            d3.select(this).style("stroke", "#fff")
+            var name, value;
+            // Clean up lost tooltips
+            d3.select('body').selectAll('div.tooltip').remove();
+            // Append tooltip
+            tooltipDiv = d3.select('body').append('div');
+            for (var i in attrs) {
+                var name = attrs[i][0];
+                if (typeof attrs[i][1] === "function") {
+                    value = attrs[i][1](d, i);
+                } else value = attrs[i][1];
+                if (name === "class") value += " tooltip";
+                tooltipDiv.attr(name, value);
+            }
+            for (var i in styles) {
+                name = styles[i][0];
+                if (typeof attrs[i][1] === "function") {
+                    value = styles[i][1](d, i);
+                } else value = styles[i][1];
+                tooltipDiv.style(name, value);
+            }
+            var absoluteMousePos = d3.mouse(bodyNode);
+            tooltipDiv.style('left', (absoluteMousePos[0] + 20)+'px')
+                .style('top', (absoluteMousePos[1] - 15)+'px')
+                .style('position', 'absolute') 
+                .style('z-index', 1001);
+            // Add text using the accessor function
+            var tooltipText = '';
+            if (typeof text === "function") tooltipText = text(d, i);
+            else if (typeof text != "undefined" || typeof text != null) tooltipText = text;
+            // Crop text arbitrarily
+            tooltipDiv
+                // .style('width', function(d, i){return (tooltipText.length > 80) ? '300px' : null;})
+                .html(tooltipText);
+        })
+        .on('mousemove', function(d, i) {
+            // Move tooltip
+            var absoluteMousePos = d3.mouse(bodyNode);
+            tooltipDiv.style('left', (absoluteMousePos[0] + 20)+'px')
+                .style('top', (absoluteMousePos[1] - 15)+'px');
+            var tooltipText = '';
+            if (typeof text === "string") tooltipText = text;
+            if (typeof text === "function") tooltipText = text(d, i);
+            tooltipDiv.html(tooltipText);
+        })
+        .on("mouseout", function(d, i){
+            d3.select(this).style("stroke", "none")
+            // Remove tooltip
+            tooltipDiv.remove();
+        });
+ 
+    }
+ 
+    tooltip.attr = function(name, value) {
+        attrs.push(arguments);
+        return this;
+    }
+ 
+    tooltip.text = function(value) {
+        text = value;
+        return this;
+    }
+ 
+    tooltip.style = function(name, value) {
+        styles.push(arguments);
+        return this;
+    }
+ 
+    return tooltip;
+};
+		</script>
+	</body>
+</html>
