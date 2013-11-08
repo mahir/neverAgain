@@ -27,6 +27,15 @@
         /*padding-bottom:10px; */
     }
 
+    #legend {
+        text-align: center;
+        font-family: sans-serif;
+        color: #eee;
+        font-size: .7em;
+        padding: 10px 240px 0;
+
+    }
+
     .title {
         font-size: 1.8em;
         /*font-weight: normal;*/
@@ -76,7 +85,16 @@ rect {
     <div id="header">
         <span class="title">Özürler</span>
         <p>Günümüze kadar dilenmiş olan resmî özürlerin zaman çizelgesi. Elazar Barkan ve Graham G. Dodds’un danışmanlığında Mahir M. Yavuz tarafindan tasarlanmistir.</p>
+
+        
     </div>
+    <div id="graph"></div>
+    <div id="legend">
+            Koyu renkli çubuklar vahşet ev zulümlerin zaman aralığını; renkli kısa çubuklar ise özürlerin dilendiği zamanı göstermektedir. Çizelge 1900 senesinden başlamaktadır, öncesinde gerçekleşen olaylar gösterilmemiştir. Ülke isimleri bugünkü resmi mirası devralan ülkeler üzerinden değerlendirilmiştir.
+
+            Renkli çubuklar Özür dileme eyleminin ciddiyetini ve neticeleri olup olmadığını belirtmektedir. <br /><br />
+            Daha Belirsiz <img src="../legend.png"> Belirgin ve Neticeleri olan
+        </div>
 		<script type="text/javascript">
 
 			var margin = {top: 0, right: 120, bottom: 20, left: 0},
@@ -95,7 +113,7 @@ rect {
 
 			$(document).ready(function() {
                 
-				svg = d3.select("body").append("svg:svg")
+				svg = d3.select("#graph").append("svg:svg")
 					.attr("class", "chart");
 
 				setVisSize();
@@ -126,7 +144,7 @@ rect {
 			function setVisSize() {
 
 				width = $(window).width();
-				height = $(window).height()-$('#header').height()-50;
+				height = $(window).height()-$('#header').height()-150;
 				$(".chart").attr("width", width)
 							.attr("height", height)
 							.append("g")
@@ -140,7 +158,7 @@ rect {
 
 			function draw() {
 				var color = d3.scale.ordinal()
-    .range(["gray", "pink", "orange", "red", "#a05d56", "#d0743c", "#ff8c00"])
+    .range(["gray", "orange", "#ff7800", "red", "#a05d56", "#d0743c", "#ff8c00"])
     .domain([0,1,2,3]);
 
 				// x,y, radius scale
