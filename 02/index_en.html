@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-		<title>Politik Özürler Kronolojisi</title>
+		<title>Chronology of Political Apologies</title>
 		<link href='http://fonts.googleapis.com/css?family=Duru+Sans&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
         <link href='http://fonts.googleapis.com/css?family=Vollkorn:400italic,700italic,400,700' rel='stylesheet' type='text/css'>
 		<style type="text/css">
@@ -83,17 +83,17 @@ rect {
 	</head>
 	<body>
     <div id="header">
-        <span class="title">Politik Özürler Kronolojisi</span>
-        <p>Günümüze kadar dilenmiş olan resmî özürlerin zaman çizelgesi. Elazar Barkan ve Graham G. Dodds’un danışmanlığında Mahir M. Yavuz tarafindan tasarlanmistir.</p>
+        <span class="title">Chronology of Political Apologies</span>
+        <p>A comprehensive timeline of the official apologies issued up to date. The project realized in consultancy with Elazar Barkan and Graham G. Dodds and designed by Mahir M. Yavuz.</p>
 
         
     </div>
     <div id="graph"></div>
     <div id="legend">
-            Koyu renkli çubuklar vahşet ev zulümlerin zaman aralığını; renkli kısa çubuklar ise özürlerin dilendiği zamanı göstermektedir. Çizelge 1900 senesinden başlamaktadır, öncesinde gerçekleşen olaylar gösterilmemiştir. Ülke isimleri bugünkü resmi mirası devralan ülkeler üzerinden değerlendirilmiştir.
+            Darker color bars represent atrocities and their timeframe; colored and short bars represent the datestamp of the official apologies. Timeline does not contain information before 1900. Country names are grouped based on actual names of the countries today.
 
-            Renkli çubuklar Özür dileme eyleminin ciddiyetini ve neticeleri olup olmadığını belirtmektedir. <br /><br />
-            Daha Belirsiz <img src="../legend.png"> Belirgin ve Neticeleri olan
+            Colors represent the degree of the apologies and (if exist) their consequences. <br /><br />
+            Less clear <img src="../legend.png"> Clear with consequences
         </div>
 		<script type="text/javascript">
 
@@ -132,9 +132,8 @@ rect {
 						if (parseDate(d.a_date_en) === null) {
 							// console.log(d.a_date_en)
                             d.date = parseMonth(d.a_date_en)
-                            // console.log(d.date)
 						}
-						countrylist.push(d.from_tr)
+						countrylist.push(d.from_en)
 					});
 					draw();
 				});
@@ -145,7 +144,7 @@ rect {
 			function setVisSize() {
 
 				width = $(window).width();
-				height = $(window).height()-$('#header').height()-200;
+				height = $(window).height()-$('#header').height()-150;
 				$(".chart").attr("width", width)
 							.attr("height", height)
 							.append("g")
@@ -215,7 +214,7 @@ gy.selectAll("text")
     .enter().append("rect")
       .attr("class", "atrocity")
       .attr("x", function(d) { return x(d.date_1); })
-      .attr("y", function(d) { return y(d.from_tr) - y.rangeBand()/2; })
+      .attr("y", function(d) { return y(d.from_en) - y.rangeBand()/2; })
       .attr("width", function(d) { return x(d.date_2) - x(d.date_1); })
       .attr("height", y.rangeBand()/2)
       .style("fill", "#000")
@@ -224,7 +223,7 @@ gy.selectAll("text")
         .attr("class", function(d, i) { d["atrocity_tr"] })
         .attr("d", "b")
         .text(function(d, i){
-            return d["atrocity_tr"];
+            return d["atrocity_en"];
             // return "Tarih: <b>"+formatDate(d["date"]) + "</b><br>" 
                   // + "Özür Dileyen : <b>"+d["from_tr"] + "</b><br><br>" 
                   // + "<b>"+ d["full_text_tr"] + "</b><br>";
@@ -238,7 +237,7 @@ gy.selectAll("text")
       .attr("class", "apology")
       .attr("x", function(d) { 
         return x(d.date); })
-      .attr("y", function(d) { return y(d.from_tr) - y.rangeBand()/2; })
+      .attr("y", function(d) { return y(d.from_en) - y.rangeBand()/2; })
       .attr("width", 4)
       .attr("height", y.rangeBand())
       .style("fill", function(d) { return color(d["ap_rate"]) })
@@ -246,7 +245,7 @@ gy.selectAll("text")
         .attr("class", function(d, i) { d["date"] })
         .attr("d", "b")
         .text(function(d, i){
-            return d["full_text_tr"];
+            return d["full_text_en"];
             // return "Tarih: <b>"+formatDate(d["date"]) + "</b><br>" 
                   // + "Özür Dileyen : <b>"+d["from_tr"] + "</b><br><br>" 
                   // + "<b>"+ d["full_text_tr"] + "</b><br>";
